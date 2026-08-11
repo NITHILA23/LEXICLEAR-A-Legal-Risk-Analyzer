@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LexiClear - AI Website Intelligence</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Premium Header with Gradient -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="logo-container">
+        <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h1 class="logo-text">LexiClear</h1>
+      </div>
+      <p class="tagline">AI Website Intelligence</p>
+    </div>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="tab-nav" role="tablist">
+    <button class="tab-btn active" data-tab="fake" role="tab" aria-selected="true">
+      <span class="tab-icon">🛡️</span>
+      <span class="tab-label">Fake Detection</span>
+    </button>
+    <button class="tab-btn" data-tab="compare" role="tab" aria-selected="false">
+      <span class="tab-icon">⚖️</span>
+      <span class="tab-label">Compare</span>
+    </button>
+    <button class="tab-btn" data-tab="legal" role="tab" aria-selected="false">
+      <span class="tab-icon">📋</span>
+      <span class="tab-label">Legal Risk</span>
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <main class="main-content">
+    
+    <!-- Fake Website Detection Tab -->
+    <section class="tab-panel active" id="panel-fake" role="tabpanel">
+      <div class="panel-header">
+        <h2 class="panel-title">Fake Website Detection</h2>
+        <p class="panel-subtitle">Analyze website authenticity and security indicators</p>
+      </div>
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="fakeUrlInput" 
+            class="input-field" 
+            placeholder="Enter website URL..."
+            autocomplete="off"
+          />
+          <button id="useCurrentUrlBtn" class="input-action-btn" title="Use current page URL">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2V8M8 2L6 4M8 2L10 4M8 14V8M8 14L6 12M8 14L10 12M2 8H8M14 8H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button id="checkFakeBtn" class="btn-primary">
+          <span class="btn-text">Analyze Website</span>
+          <span class="btn-loader" style="display: none;"></span>
+        </button>
+      </div>
+
+      <div id="fakeStatus" class="status-message" role="status" aria-live="polite"></div>
+
+      <!-- Results Container -->
+      <div id="fakeResult" class="result-container" style="display: none;">
+        <div class="risk-meter-wrapper">
+          <div class="risk-meter">
+            <svg class="risk-circle" viewBox="0 0 120 120">
+              <circle class="risk-bg" cx="60" cy="60" r="54" />
+              <circle class="risk-progress" cx="60" cy="60" r="54" />
+            </svg>
+            <div class="risk-score">
+              <span class="score-value" id="fakeScoreValue">—</span>
+              <span class="score-label">/ 100</span>
+            </div>
+            <span class="score-sublabel">safety score</span>
+          </div>
+          <p class="score-explanation">Safety score: higher = safer. Based on domain, SSL, content & reputation checks.</p>
+          <div class="risk-status">
+            <span id="fakeStatusBadge" class="status-badge">—</span>
+          </div>
+          <p class="checks-used" id="checksUsed"></p>
+        </div>
+
+        <div class="breakdown-section">
+          <button class="breakdown-toggle" id="fakeBreakdownToggle">
+            <span>Technical Signals</span>
+            <svg class="toggle-icon" width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <div class="breakdown-content" id="fakeBreakdown" style="display: none;">
+            <div class="breakdown-item">
+              <span class="breakdown-label">Domain Age</span>
+              <span class="breakdown-value" id="domainAgeRisk">—</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">SSL Certificate</span>
+              <span class="breakdown-value" id="sslRisk">—</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">Suspicious Keywords</span>
+              <span class="breakdown-value" id="keywordRisk">0</span>
+            </div>
+            <div class="breakdown-item">
+              <span class="breakdown-label">Missing Legal Pages</span>
+              <span class="breakdown-value" id="missingPagesRisk">0</span>
+            </div>
+            <div class="breakdown-item" id="googleSafeBrowsingItem" style="display: none;">
+              <span class="breakdown-label">Google Safe Browsing</span>
+              <span class="breakdown-value" id="googleSafeBrowsing">—</span>
+            </div>
+            <div class="breakdown-item" id="virustotalItem" style="display: none;">
+              <span class="breakdown-label">VirusTotal Detections</span>
+              <span class="breakdown-value" id="virustotalDetections">—</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="recommendation-section" id="recommendationSection" style="display: none;">
+          <p class="recommendation-text" id="recommendationText"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- App Comparison Tab -->
+    <section class="tab-panel" id="panel-compare" role="tabpanel">
+      <div class="panel-header">
+        <h2 class="panel-title">App-to-App Comparison</h2>
+        <p class="panel-subtitle">Compare your app with competitors in the same domain</p>
+      </div>
+
+      <div class="input-group">
+        <div class="input-wrapper">
+          <input 
+            type="text" 
+            id="comparePrimaryUrl" 
+            class="input-field" 
+            placeholder="Enter app URL..."
+            autocomplete="off"
+          />
+          <button id="compareUseCurrentBtn" class="input-action-btn" title="Use current page URL">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <path d="M8 2V8M8 2L6 4M8 2L10 4M8 14V8M8 14L6 12M8 14L10 12M2 8H8M14 8H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <button id="compareAppsBtn" class="btn-primary">
+          <span class="btn-text">Compare Apps</span>
+          <span class="btn-loader" style="display: none;"></span>
+        </button>
+      </div>
+
+      <div id="compareStatus" class="status-message" role="status" aria-live="polite"></div>
+
+      <!-- Comparison Results -->
+      <div id="compareResult" class="compare-results" style="display: none;">
+        <div id="compareRecommended" class="recommended-banner" style="display: none;"></div>
+        <div class="compare-table-container">
+          <table class="compare-table" id="compareTable">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>App</th>
+                <th>Risk Score</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="compareTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Legal Risk Analyzer Tab -->
+    <section class="tab-panel" id="panel-legal" role="tabpanel">
+      <div class="panel-header">
+        <h2 class="panel-title">Legal Risk Analyzer</h2>
+        <p class="panel-subtitle">Analyze legal clauses and compliance risks</p>
+      </div>
+
+      <div class="input-group">
+        <button id="analyzeBtn" class="btn-primary btn-full">
+          <span class="btn-text">Analyze Current Page</span>
+          <span class="btn-loader" style="display: none;"></span>
+        </button>
+      </div>
+
+      <div id="status" class="status-message" role="status" aria-live="polite"></div>
+
+      <!-- Legal Analysis Results -->
+      <div id="outputPreview" class="legal-results" style="display: none;">
+        <!-- Risk Score Display -->
+        <div class="risk-score-container">
+          <div class="risk-score-circle">
+            <svg class="risk-score-svg" viewBox="0 0 120 120">
+              <circle class="risk-score-bg" cx="60" cy="60" r="54" />
+              <circle class="risk-score-progress" cx="60" cy="60" r="54" />
+            </svg>
+            <div class="risk-score-value">
+              <span id="legalRiskScore">—</span>
+              <span class="risk-score-max">/ 100</span>
+            </div>
+          </div>
+          <div class="risk-level-badge-container">
+            <span id="legalRiskBadge" class="risk-level-badge">—</span>
+          </div>
+        </div>
+
+        <!-- Pros Section -->
+        <div class="pros-cons-section">
+          <div class="pros-section">
+            <div class="section-header">
+              <span class="section-icon">✔</span>
+              <h3 class="section-title">Pros</h3>
+            </div>
+            <ul class="pros-list" id="legalPros"></ul>
+          </div>
+
+          <div class="cons-section">
+            <div class="section-header">
+              <span class="section-icon">⚠</span>
+              <h3 class="section-title">Cons</h3>
+            </div>
+            <ul class="cons-list" id="legalCons"></ul>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="legal-summary" id="legalSummary"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
